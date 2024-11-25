@@ -6,4 +6,4 @@ To install the extension, open the Chrome extension manager (chrome://extensions
 
 Enable the Developer Mode switch (top right corner)
 
-Download the .crx file to your local computer and drag and drop on the Chrome browser.
+Download the .crx file from the "Extension Download Folder" to your local computer and drag and drop on the Chrome browser.
