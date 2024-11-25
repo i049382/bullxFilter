@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "BullX Pump Vision Filter",
+  "version": "1.0",
+  "description": "Filter pump cards on bullx.io/pump-vision",
+  "icons": {
+    "16": "bullxFilter.png",
+    "32": "bullxFilter.png",
+    "48": "bullxFilter.png",
+    "128": "bullxFilter.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "bullxFilter.png",
+      "32": "bullxFilter.png",
+      "48": "bullxFilter.png",
+      "128": "bullxFilter.png"
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://bullx.io/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://bullx.io/pump-vision*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+} 

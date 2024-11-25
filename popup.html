@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      width: 300px;
+      padding: 10px;
+    }
+    .input-group {
+      margin-bottom: 10px;
+    }
+    #keywordInput {
+      width: calc(100% - 12px);
+      padding: 5px;
+      margin-bottom: 5px;
+    }
+    button {
+      padding: 5px 10px;
+      background: #459C6E;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #keywordsList {
+      margin-top: 10px;
+    }
+    .keyword-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px;
+      background: #f5f5f5;
+      margin-bottom: 5px;
+      border-radius: 4px;
+    }
+    .delete-btn {
+      background: #ff4444;
+      padding: 2px 8px;
+      font-size: 12px;
+    }
+    .keyword-text {
+      word-break: break-all;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="input-group">
+    <input type="text" id="keywordInput" placeholder="Enter keyword to filter">
+    <button id="addKeyword">Add Keyword</button>
+  </div>
+  <div id="keywordsList">
+    <!-- Keywords will be inserted here -->
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html> 
