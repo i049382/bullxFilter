@@ -1,63 +1,87 @@
 let observer = null;
 
-function filterCards(keywords) {
+function filterTableRows(keywords) {
     try {
-        // Get all pump cards
+        // Get the table body
+        const tableBody = document.querySelector('.ant-table-tbody');
+        if (!tableBody) {
+            console.log('Table body not found');
+            return;
+        }
+
+        // Get all rows except measure row
+        const rows = tableBody.querySelectorAll('tr:not(.ant-table-measure-row)');
+        console.log('Found rows:', rows.length);
+
+        rows.forEach((row, index) => {
+            try {
+                // Get all text content from the row
+                const allText = row.textContent.toLowerCase().trim();
+                console.log(`Row ${index} text:`, allText);
+
+                // Show row if it matches any keyword
+                const shouldShow = keywords.length === 0 || keywords.some(keyword => {
+                    const lowercaseKeyword = keyword.toLowerCase().trim();
+                    const matches = allText.includes(lowercaseKeyword);
+                    console.log(`Checking keyword "${lowercaseKeyword}" against row ${index}:`, matches);
+                    return matches;
+                });
+                
+                // Apply visibility
+                row.style.display = shouldShow ? 'table-row' : 'none';
+                console.log(`Row ${index} visibility:`, shouldShow ? 'visible' : 'hidden');
+            } catch (error) {
+                console.error('Error processing row:', index, error);
+            }
+        });
+    } catch (error) {
+        console.error('Filter table rows error:', error);
+    }
+}
+
+function filterPumpCards(keywords) {
+    try {
         const pumpCards = document.querySelectorAll('.pump-card');
         
         pumpCards.forEach(card => {
             try {
-                // Get the token name and description elements
                 const nameElement = card.querySelector('.text-grey-50');
                 const descElement = card.querySelector('.text-grey-200');
                 
-                // Safely get text content and convert to lowercase
                 const tokenName = (nameElement?.textContent || '').toLowerCase().trim();
                 const tokenDesc = (descElement?.textContent || '').toLowerCase().trim();
                 
-                // Debug logging
-                console.log('Filtering card:', {
-                    tokenName,
-                    tokenDesc,
-                    keywords
-                });
-
-                // Show card if it matches any keyword
                 const shouldShow = keywords.length === 0 || keywords.some(keyword => {
                     const lowercaseKeyword = keyword.toLowerCase().trim();
-                    const nameMatch = tokenName.includes(lowercaseKeyword);
-                    const descMatch = tokenDesc.includes(lowercaseKeyword);
-                    
-                    // Debug logging for matches
-                    // console.log('Keyword check:', {
-                    //     keyword: lowercaseKeyword,
-                    //     nameMatch,
-                    //     descMatch
-                    // });
-                    
-                    return nameMatch || descMatch;
+                    return tokenName.includes(lowercaseKeyword) || tokenDesc.includes(lowercaseKeyword);
                 });
                 
-                // Apply visibility
                 card.style.display = shouldShow ? 'flex' : 'none';
-                
-                // Debug logging for visibility
-                // console.log('Card visibility:', {
-                //     tokenName,
-                //     shouldShow
-                // });
             } catch (error) {
                 console.error('Error processing individual card:', error);
             }
         });
     } catch (error) {
-        console.error('Filter cards error:', error);
+        console.error('Filter pump cards error:', error);
+    }
+}
+
+function filterContent(keywords) {
+    // Determine which page we're on and apply appropriate filtering
+    const currentPath = window.location.pathname;
+    console.log('Current path:', currentPath);
+
+    if (currentPath.includes('pump-vision')) {
+        console.log('Filtering pump vision page');
+        filterPumpCards(keywords);
+    } else if (currentPath === '/') {
+        console.log('Filtering main page');
+        filterTableRows(keywords);
     }
 }
 
 function initializeObserver() {
     try {
-        // Stop existing observer if any
         if (observer) {
             observer.disconnect();
         }
@@ -66,7 +90,7 @@ function initializeObserver() {
             try {
                 chrome.storage.local.get(['filterKeywords'], (result) => {
                     const keywords = result.filterKeywords || [];
-                    filterCards(keywords);
+                    filterContent(keywords);
                 });
             } catch (error) {
                 console.error('Observer error:', error);
@@ -83,24 +107,20 @@ function initializeObserver() {
     }
 }
 
-// Initialize extension
 function initializeExtension() {
     try {
-        // Apply saved filters on page load
         chrome.storage.local.get(['filterKeywords'], (result) => {
             const keywords = result.filterKeywords || [];
             console.log('Initializing with keywords:', keywords);
-            filterCards(keywords);
+            filterContent(keywords);
         });
 
-        // Initialize observer
         initializeObserver();
 
-        // Listen for messages from popup
         chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             if (request.action === 'filter') {
                 console.log('Received filter request with keywords:', request.keywords);
-                filterCards(request.keywords);
+                filterContent(request.keywords);
             }
         });
     } catch (error) {

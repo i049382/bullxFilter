@@ -27,7 +27,10 @@
   ],
   "content_scripts": [
     {
-      "matches": ["https://bullx.io/pump-vision*"],
+      "matches": [
+        "https://bullx.io/*",
+        "https://bullx.io/pump-vision*"
+      ],
       "js": ["content.js"],
       "run_at": "document_end"
     }
